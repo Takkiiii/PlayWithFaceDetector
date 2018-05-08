@@ -1,0 +1,27 @@
+.face {
+    position: absolute;
+    border-width: 1px;
+    border-style: solid;
+    border-color: yellow;
+    border-image: initial;
+}
+
+.eye {
+    width: 30%;
+    height: 30%;
+    position: absolute;
+    border-width: 1px;
+    border-style: solid;
+    border-color: blue;
+    border-image: initial;
+}
+
+.mouth {
+    width: 60%;
+    height: 30%;
+    position: absolute;
+    border-width: 1px;
+    border-style: solid;
+    border-color: orange;
+    border-image: initial;
+}
