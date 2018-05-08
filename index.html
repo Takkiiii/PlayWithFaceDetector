@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Play with FaceDector API</title>
+    <style>
+        .face {
+            position: absolute;
+            border-width: 1px;
+            border-style: solid;
+            border-color: yellow;
+            border-image: initial;
+        }
+
+        .eye {
+            position: absolute;
+            border-width: 1px;
+            border-style: solid;
+            border-color: blue;
+            border-image: initial;
+        }
+
+        .mouth {
+            position: absolute;
+            border-width: 1px;
+            border-style: solid;
+            border-color: orange;
+            border-image: initial;
+        }
+    </style>
+</head>
+
+<body>
+    <input class="imagePathButton" type="file" />
+    <div class="url" readonly></div>
+    <input class="detectButton" type="button" value="解析" />
+    <div class="background"></div>
+</body>
+<script>
+    const imagePathButton = document.querySelector('.imagePathButton');
+    const detectButton = document.querySelector('.detectButton');
+    imagePathButton.addEventListener('change', event => {
+        let file = event.target.files;
+        let reader = new FileReader();
+        reader.readAsDataURL(file[0]);
+        reader.onload = () => {
+            let dataUrl = reader.result;
+            document.querySelector('.background').innerHTML = "<img class='image' src='" + dataUrl + "'>";
+            document.querySelector(".url").value = dataUrl;
+        }
+    }, false);
+    detectButton.addEventListener('click', event => {
+        const image = document.querySelector('.image');
+        const faceDector = new window.FaceDetector();
+        faceDector.detect(image).then(function (faces) {
+            faces.forEach(function (face) {
+                drawFace(face);
+            })
+        })
+    })
+
+    function drawFace(face) {
+        const {
+            width,
+            height,
+            top,
+            left
+        } = face.boundingBox;
+        const faceBox = document.createElement('div');
+        faceBox.classList.add('face');
+        faceBox.style.cssText =`width: ${width}px;height: ${height}px;top: ${top}px;left: ${left}px;`;
+        face.landmarks.forEach(landmark => {
+            const el = document.createElement('div');
+            el.classList.add('landmark', landmark.type);
+            console.log(landmark.type);
+            el.style.cssText = landmark.type === 'eye' ? `width: 30%;height: 30%;top: calc(${landmark.location.y - top}px - 15%);left: calc(${landmark.location.x - left}px - 15%);`
+            : `width: 60%;height: 30%;top: calc(${landmark.location.y - top}px - 15%);left: calc(${landmark.location.x - left}px - 30%);`;
+            faceBox.appendChild(el);
+        })
+        console.log(faceBox);
+        document.querySelector('.background').appendChild(faceBox);
+    }
+</script>
+
+</html>
